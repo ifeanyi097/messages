@@ -1,0 +1,52 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.db
+*.sqlite3
+*.egg-info/
+dist/
+build/
+.eggs/
+*.egg
+
+# Django
+*.log
+*.pot
+*.pyc
+*.mo
+*.orig
+*.cover
+*.coverage
+*.DS_Store
+media/
+staticfiles/
+.env
+.env.*.local
+venv/
+
+# VS Code
+.vscode/
+
+# PyCharm
+.idea/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Other
+*.swp
+*.swo
+*~
+*.bak
+*.tmp
+*.temp
+
+# Local configuration
+local_settings.py
+
+# Database
+db.sqlite3
+db/*.sqlite3
+

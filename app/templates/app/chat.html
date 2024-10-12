@@ -1,0 +1,167 @@
+{%load static%}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Chat</title>
+    <link rel="stylesheet" href="{%static 'app/chat.css' %}">
+</head>
+<body>
+    <div class="head">
+        <img src="" alt="User Image">
+        {% for convo in conversation.participants.all %}
+        {%if convo != user %}
+        <h3>{{convo.username}}</h3>
+        {% endif %}
+        {%endfor%}
+    </div>
+    <div class="body" id="chatBody">
+        <div class="message">
+            <img src="" alt="User Image">
+            <p>Lorem ipsum dolor sit amet.</p>
+        </div>
+        <div class="message me">
+            <p>Lorem ipsum dolor sit amet.</p>
+        </div>
+    </div>
+    <form class="input">
+        <input type="text" name="message" id="messageInput" placeholder="Type a message...">
+        <input type="submit" value="Send">
+    </form>
+    <input type="hidden" id="conversation" value="{{conversation.id}}">
+    <input type="hidden" id="username" value="{{user.username}}">
+    <input type="hidden" id="csrf-token" value="{%csrf_token%}">
+    <div id="response"></div>
+    <script>
+        const id = document.getElementById("conversation").value;
+        const username = document.getElementById("username").value;
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+const csrfToken = getCookie('csrftoken');
+
+
+
+
+
+        let last_time = 0;
+
+
+        function markRead(){
+
+            fetch(`/chat/markread/${id}/`, {
+
+                method: "POST",
+                headers: {
+                    "content-type":"application/json",
+                    "X-CSRFToken": csrfToken
+                }
+            })
+            .then(response => {
+                if(!response.ok){
+                    alert("error")
+                }
+                return response.json()
+            })
+            .then(data => {
+                console.log(data.status)
+            })
+
+
+        }
+
+
+        function newMessage(){
+
+            fetch(`/chat/newMessage/${id}/?last_time=${last_time}`)
+                .then(response => response.json())
+                .then(data => {
+                    const body = document.querySelector('.body');
+                    if(data.messages.length > 0){
+
+                        data.messages.forEach(msg => {
+                        if(msg.sender === username){
+                            last_time = msg.id;
+                            body.innerHTML += `<div class="message me">
+                            <p>${msg.message}</p>
+                            </div>`;
+
+                        }else{
+                           last_time = msg.id;
+                           body.innerHTML +=`<div class="message">
+                           <img src="" alt="User Image">
+                           <p>${msg.message}</p>
+                           </div>`
+
+                        }
+                        //last_time = new Date(msg.time).getTime();
+                        //body.innerHTML += `<h1>${last_time}</h1>`
+
+
+                        //const forr = document.querySelector('.input');
+                        body.scrollTop = body.scrollHeight;
+                    })
+                    }
+
+
+                   //body.innerHTML +=`<p>overall: ${last_time}</p>`
+
+                })
+            markRead();
+                //body.scrillTop = body.scrollHeight;
+
+        }
+
+
+        window.scrollToBottom;
+        newMessage();
+
+
+
+
+        document.querySelector(".input").addEventListener('submit', (event) => {
+
+            event.preventDefault();
+            let message = document.getElementById('messageInput');
+
+            fetch(`/chat/sendmessage/${id}/`, {
+                method: "POST",
+                headers: {
+                    'content-type':'application/json',
+                    'X-CSRFToken': csrfToken
+                },
+                body: JSON.stringify({'message':message.value})
+            })
+            .then(response => {
+
+                if(!response.ok){
+                    alert('error');
+                }
+                return response.json()
+            })
+            .then(data => {
+                console.log(data.status)
+                message.value = ""
+                newMessage();
+            })
+        })
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,84 @@
+*{
+    margin:0;
+    padding:0;
+}
+.banner{
+    height: 12vh;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    background: cyan;
+}
+.me{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    width: 40%;
+}
+.me h3{
+    font-size: 24px;
+    color: black;
+    text-shadow: 0 0 .4 black;
+    font-family: Consolas;
+}
+.me p{
+    color: black;
+    text-shadow: 0 0 .4 black;
+    font-family: Consolas;
+
+}
+.me input{
+    border-radius:3px;
+}
+.link{
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+.link a{
+    font-family: Consolas;
+    text-decoration: none;
+    color: black;
+
+}
+.messages{
+    background:white;
+    width:98%;
+    margin-right: auto;
+    margin-left: auto;
+    margin-top: 5px;
+    display: flex;
+    flex-direction: column;
+
+}
+.message{
+    background:grey;
+    width: 99%;
+    margin:3px;
+    display: flex;
+    flex-direction: column;
+}
+.message-link{
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    margin: 3px;
+    text-decoration: none;
+    color: cyan;
+    font-size: 16px;
+}
+.message-text{
+    width:100%;
+    display:flex;
+    justify-content: flex-end;
+    color: black;
+    font-size: 12px;
+}
+.message-text span{
+    height:100%;
+    background: cyan;
+    color: black;
+    border-radius: 50%;
+}
+

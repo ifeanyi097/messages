@@ -1,0 +1,37 @@
+{%load static%}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>my chat board</title>
+    <link rel="stylesheet" href="{% static 'app/style.css' %}">
+</head>
+<body>
+    <div class="banner">
+    <div class="me">
+        <h3>{{user.username}}</h3>
+
+        <input type="text" id="search" placeholder="search friends">
+        <p>Conversations</p>
+    </div>
+    <div class="link">
+        <a href="">Log Out</a>
+    </div>
+    </div>
+    <div class="messages">
+        {% for convo in conversations %}
+        <div class="message">
+            {% for participant in convo.conversation.participants.all %}
+            {%if participant != user %}
+            <a href="{%url 'chat' convo.conversation.pk %}" class="message-link">{{participant.username}}</a>
+            {% endif %}
+            {% endfor %}
+         <p class="message-text">{{convo.message.message}}<span>{{convo.unread}}</span></p>
+        </div>
+      {% endfor %}
+
+    </div>
+</body>
+</html>
