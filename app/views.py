@@ -34,7 +34,7 @@ def index(request):
 def loginUser(request):
         username = request.POST.get('username')
         password = request.POST.get('password')
-        if username.strip() != "" & password.strip() != "":
+        if username.strip() != "" and password.strip() != "":
             user = authenticate(request, username=username, password=password)
             if user is not None:
                 login(request, user)
