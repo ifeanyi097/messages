@@ -32,11 +32,9 @@ def index(request):
 
 
 def loginUser(request):
-    try:
-        data = json.loads(request.body)
-        username = data.get('username').strip()
-        password = data.get('password').strip()
-        if username & password:
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        if username.strip() != "" & password.strip() != "":
             user = authenticate(request, username=username, password=password)
             if user is not None:
                 login(request, user)
@@ -45,9 +43,9 @@ def loginUser(request):
                 user = get_user_model().objects.create_user(username=username, email="nomail@gmail.com", password=password)
                 login(request, user)
 
-            return JsonResponse({"status":"ok", "url":"/"})
-    except:
-        return JsonResponse({"status":"error"})
+            return redirect("index")
+
+        return redirect("index")
 
 
 

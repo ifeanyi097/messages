@@ -10,7 +10,7 @@
 </head>
 <body>
     <div class="form-container">
-        <form id="loginForm">
+        <form action="{% url 'loginUser' %}" method="post" id="logiForm">
             {%csrf_token%}
             <h2>Login</h2>
             <div class="form-group">
@@ -28,7 +28,7 @@
 
     <script>
 
-        document.getElementById("loginForm").addEventListener("submit", function(event){
+        document.getElementById("loginForm").addEventListener("submit", (event) => {
 
             event.preventDefault();
             const username = document.getElementById("username").value;
