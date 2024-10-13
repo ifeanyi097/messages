@@ -33,9 +33,9 @@ def index(request):
 
 def loginUser(request):
     try:
-        data = json.loads(request.body.decode("utf-8"))
-        username = data.get('username','').strip()
-        password = data.get('password','').strip()
+        data = json.loads(request.body)
+        username = data.get('username').strip()
+        password = data.get('password').strip()
         if username & password:
             user = authenticate(request, username=username, password=password)
             if user is not None:
