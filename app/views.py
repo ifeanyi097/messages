@@ -69,6 +69,19 @@ def get_messages(request, pk):
     return JsonResponse({'messages':[]})
 
 
+def search(request):
+    value = request.GET.get("value","")
+    if value.strip() != "":
+        users = get_user_model().objects.filter(username__icontains=value)
+        users_list = []
+        for i in users:
+            if i != request.user:
+                users_list.append({"username":i.username,"id":i.pk})
+        return JsonResponse({"users":users_list})
+    else:
+        return JsonResponse({"no":"no resule"})
+
+
 
 def send_message(request, pk):
     conversation = Conversation.objects.get(pk=pk)

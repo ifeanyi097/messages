@@ -33,5 +33,27 @@
       {% endfor %}
 
     </div>
+    <div class="results">
+        <ul id="ul"></ul>
+    </div>
+    <script>
+
+        const search = document.getElementById("search");
+
+        search.addEventListener("keyup", () => {
+            setTimeout(() => {
+                fetch(`/chat/search/?value=${search.value}/`)
+                .then(response => response.json())
+                .then(data => {
+                    if(data.users){
+                        data.users.forEach((user) => {
+                            document.getElementById("ul").innerHTML += `<li><a href="">${user.username}</a></li>`;
+                        })
+                    }
+                })
+            },1000)
+        })
+
+    </script>
 </body>
 </html>

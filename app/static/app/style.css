@@ -81,4 +81,18 @@
     color: black;
     border-radius: 50%;
 }
+.results{
+      background: rgba(100,100,100,.7);
+      width:70%;
+      position: fixed;
+      top: 13vh;
+      left:12%;
+    }
+.results a{
+      text-decoration: none;
+      color: blue;
+    }
+.results li{
+      list-style: none;
+    }
 

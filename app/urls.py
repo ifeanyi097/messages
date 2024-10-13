@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import index, chat, get_messages, send_message, mark_read, loginUser
+from .views import index, chat, get_messages, send_message, mark_read, loginUser, search
 
 urlpatterns =[
     path("", index, name="index"),
@@ -8,4 +8,5 @@ urlpatterns =[
     path("chat/sendmessage/<int:pk>/", send_message, name="send_message"),
     path("chat/markread/<int:pk>/", mark_read, name='mark_read'),
     path("chat/login/", loginUser, name="loginUser"),
+    path("chat/search/", search, name="search"),
 ]
