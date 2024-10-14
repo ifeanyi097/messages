@@ -50,7 +50,7 @@
                     return response.json()})
                 .then(data => {
                     if(data.users){
-                        alert(data.users[0].username)
+                        alert("yeeaa")
                         data.users.forEach((user) => {
                             document.getElementById("ul").innerHTML += `<li><a href="">${user.username}</a></li>`;
                         })
