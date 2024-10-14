@@ -72,7 +72,7 @@ def get_messages(request, pk):
 def search(request):
     value = request.GET.get("value","")
     if value.strip() is not "":
-        users = get_user_model().objects.filter(username__icontains=value)
+        users = get_user_model().objects.filte(username__icontains=value)
         users_list = []
         for i in users:
             if i is not request.user:
