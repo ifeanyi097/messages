@@ -49,7 +49,7 @@
                     }
                     return response.json()})
                 .then(data => {
-                    if(data.users){
+                    if(data.users.length > 0){
                         alert("yeeaa")
                         data.users.forEach((user) => {
                             document.getElementById("ul").innerHTML += `<li><a href="">${user.username}</a></li>`;
