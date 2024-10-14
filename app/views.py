@@ -71,11 +71,11 @@ def get_messages(request, pk):
 
 def search(request):
     value = request.GET.get("value","")
-    if value.strip() != "":
+    if value.strip() is not "":
         users = get_user_model().objects.filter(username__icontains=value)
         users_list = []
         for i in users:
-            if i != request.user:
+            if i is not request.user:
                 users_list.append({"username":i.username,"id":i.pk})
         return JsonResponse({"users":users_list})
     else:
