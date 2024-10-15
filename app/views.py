@@ -71,7 +71,7 @@ async def get_messages(request, pk):
 
         while True:
             message = await sync_to_async(list)(Message.objects.filter(Q(conversation__pk=pk) & Q(id__gt=last_time)).order_by('date'))
-            if message.exists():
+            if message:
                 for msg in message:
                     yield f"data:{json.dumps({'sender':msg.sender.username, 'message':msg.message})}\n\n"
                     last_time = msg.id
