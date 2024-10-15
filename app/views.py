@@ -6,6 +6,7 @@ from django.db.models import Q, Count, Max
 from django.views.decorators.csrf import csrf_exempt
 import time
 import asyncio
+from asgiref.sync import sync_to_async
 import json
 from django.utils.dateparse import parse_datetime
 from datetime import datetime
@@ -69,7 +70,7 @@ async def get_messages(request, pk):
         last_time = 0
 
         while True:
-            message = Message.objects.filter(Q(conversation__pk=pk) & Q(id__gt=last_time)).order_by('date')
+            message = await sync_to_async(list)(Message.objects.filter(Q(conversation__pk=pk) & Q(id__gt=last_time)).order_by('date'))
             if message.exists():
                 for msg in message:
                     yield f"data:{json.dumps({'sender':msg.sender.username, 'message':msg.message})}\n\n"
