@@ -90,51 +90,43 @@ const csrfToken = getCookie('csrftoken');
         }
 
 
-        function newMessage(){
 
 
-            fetch(`/chat/newMessage/${id}/?last_time=${last_time}`)
-                .then(response => response.json())
-                .then(data => {
-                    const body = document.querySelector('.body');
-                    if(data.messages.length > 0){
 
-                        data.messages.forEach(msg => {
-                        if(msg.sender === username){
-                            last_time = msg.id;
-                            body.innerHTML += `<div class="message me">
-                            <p>${msg.message}</p>
-                            </div>`;
+        const eventSource = new EventSource(`/chat/newMessage/${id}/`)
 
-                        }else{
-                           last_time = msg.id;
-                           body.innerHTML +=`<div class="message">
+        eventSource.onmessage = function(e){
+            const data = e.data;
+            const body = document.querySelector('.body');
+            if(data.sender === username){
+                body.innerHTML += `<div class="message me">
+                            <p>${data.message}</p>
+                            </div>`
+                body.scrollTop = body.scrollHeight;
+                markRead();
+
+            }
+            else{
+                body.innerHTML += `<div class="message">
                            <img src="" alt="User Image">
-                           <p>${msg.message}</p>
+                           <p>${data.message}</p>
                            </div>`
+                body.scrollTop = body.scrollHeight;
+                markRead();
+            }
+        }
 
-                        }
-                        //last_time = new Date(msg.time).getTime();
-                        //body.innerHTML += `<h1>${last_time}</h1>`
-
-
-                        //const forr = document.querySelector('.input');
-                        body.scrollTop = body.scrollHeight;
-                    })
-                    }
-
-
-                   //body.innerHTML +=`<p>overall: ${last_time}</p>`
-
-                })
-            markRead();
-                //body.scrillTop = body.scrollHeight;
-
+        eventSource.onerror= function(){
+            alert("error fetching data")
         }
 
 
+                //body.scrillTop = body.scrollHeight;
+
+
+
+
         window.scrollToBottom;
-        newMessage();
 
 
 

@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.http import StreamingHttpResponse
 from .models import *
 from django.http import JsonResponse
 from django.db.models import Q, Count, Max
@@ -62,15 +63,20 @@ def chat(request, pk):
 
 
 def get_messages(request, pk):
-    last_time = int(request.GET.get('last_time', 0))
+    def event_stream():
 
-    while True:
-        message = Message.objects.filter(Q(conversation__pk=pk) & Q(id__gt=last_time)).order_by('date')
-        if message.exists():
-            message_data = [{'sender':msg.sender.username, 'id': msg.id, 'message':msg.message,'time':msg.date} for msg in message]
-            return JsonResponse({'messages':message_data})
-        time.sleep(1)
-    return JsonResponse({'messages':[]})
+        last_time = 0
+
+        while True:
+            message = Message.objects.filter(Q(conversation__pk=pk) & Q(id__gt=last_time)).order_by('date')
+            if message.exists():
+                for msg in message:
+                    yield f"data:{json.dumps({'sender':msg.sender.username, 'message':msg.message})}\n\n"
+                    last_time = msg.id
+
+            time.sleep(1)
+    return StreamingHttpResponse(event_stream(), content_type= 'text/event-stream')
+
 
 
 def search(request):
