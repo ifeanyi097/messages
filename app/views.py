@@ -5,6 +5,7 @@ from django.http import JsonResponse
 from django.db.models import Q, Count, Max
 from django.views.decorators.csrf import csrf_exempt
 import time
+import asyncio
 import json
 from django.utils.dateparse import parse_datetime
 from datetime import datetime
@@ -62,8 +63,8 @@ def chat(request, pk):
         return render(request, 'app/chat.html', {'user':user})
 
 
-def get_messages(request, pk):
-    def event_stream():
+async def get_messages(request, pk):
+    async def event_stream():
 
         last_time = 0
 
@@ -74,7 +75,7 @@ def get_messages(request, pk):
                     yield f"data:{json.dumps({'sender':msg.sender.username, 'message':msg.message})}\n\n"
                     last_time = msg.id
 
-            time.sleep(1)
+            await asyncio.sleep(1)
     return StreamingHttpResponse(event_stream(), content_type= 'text/event-stream')
 
 
