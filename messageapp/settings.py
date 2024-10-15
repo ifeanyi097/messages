@@ -76,9 +76,17 @@ import dj_database_url
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
+# settings.py
+'''DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',  # The database backend
+        'NAME': BASE_DIR / 'db.sqlite3',         # The database file path
+    }
+}'''
 DATABASES = {
-    "default": dj_database_url.config(default="postgresql://messages_db_18al_user:903norp8F6un1num8D5IyqRxEEj5Xwdy@dpg-cs4p89t2ng1s73cksru0-a/messages_db_18al")
+    'default': dj_database_url.config(default='postgresql://messages_db_18al_user:903norp8F6un1num8D5IyqRxEEj5Xwdy@dpg-cs4p89t2ng1s73cksru0-a/messages_db_18al')
 }
+
 
 
 # Password validation

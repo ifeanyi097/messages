@@ -52,9 +52,13 @@ def loginUser(request):
 
 
 def chat(request, pk):
-    conversation = Conversation.objects.get(pk=pk)
+    try:
+        conversation = Conversation.objects.get(pk=pk)
 
-    return render(request, 'app/chat.html',{'conversation':conversation})
+        return render(request, 'app/chat.html',{'conversation':conversation})
+    except:
+        user = get_user_model().objects.get(pk=pk)
+        return render(request, 'app/chat.html', {'user':user})
 
 
 def get_messages(request, pk):
@@ -71,12 +75,14 @@ def get_messages(request, pk):
 
 def search(request):
     value = request.GET.get("value","")
-    if value.strip() is not "":
-        users = get_user_model().objects.filte(username__icontains=value)
+    print(value)
+    if value.strip() != "":
+        users = get_user_model().objects.filter(username__icontains=value)
         users_list = []
         for i in users:
-            if i is not request.user:
+            if i != request.user:
                 users_list.append({"username":i.username,"id":i.pk})
+        #print(users_list[0].username)
         return JsonResponse({"users":users_list})
     else:
         return JsonResponse({"no":"no resule"})
@@ -84,28 +90,53 @@ def search(request):
 
 
 def send_message(request, pk):
-    conversation = Conversation.objects.get(pk=pk)
     try:
+        conversation = Conversation.objects.get(pk=pk)
+        try:
 
-        data = json.loads(request.body.decode('utf-8'))
-        message = data.get('message', '').strip()
-        if message:
+            data = json.loads(request.body.decode('utf-8'))
+            message = data.get('message', '').strip()
+            if message:
 
-            messag = Message.objects.create(conversation=conversation, sender=request.user, message=message)
-            return JsonResponse({"status":"ok"})
+                messag = Message.objects.create(conversation=conversation, sender=request.user, message=message)
+                return JsonResponse({"status":"ok"})
 
-        return JsonResponse({'status':'nothing'})
+            return JsonResponse({'status':'nothing'})
 
-    except:
-        return JsonResponse({'error':'something went wrong'})
+        except:
+            return JsonResponse({'error':'something went wrong'})
+    except Conversation.DoesNotExist:
+        print("no conversation")
+        rec = get_user_model().objects.get(pk=pk)
+        conversation = Conversation.objects.create()
+        conversation.participants.add(rec)
+        conversation.participants.add(request.user)
+        conversation.save()
+        print(conversation.participants.all())
+        try:
+            data = json.loads(request.body.decode('utf-8'))
+            message = data.get('message', '').strip()
+            if message:
+                messag = Message.objects.create(conversation=conversation, sender=request.user, message=message)
+                print("sent")
+                return JsonResponse({'status':'ok'})
+            print("not sent")
+            return JsonResponse({'status':'nothing'})
+        except:
+            return JsonResponse({'error':'something went wrong'})
+
+
 
 
 def mark_read(request, pk):
-    conversation = Conversation.objects.get(pk=pk)
-    messages = Message.objects.filter(Q(conversation=conversation) & ~Q(sender=request.user))
+    try:
+        conversation = Conversation.objects.get(pk=pk)
+        messages = Message.objects.filter(Q(conversation=conversation) & ~Q(sender=request.user))
 
-    messages.update(is_read=True)
-    return JsonResponse({"status":"ok"})
+        messages.update(is_read=True)
+        return JsonResponse({"status":"ok"})
+    except Conversation.DoesNotExist:
+        return JsonResponse({'status':'error'})
 
 
 

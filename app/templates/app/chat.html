@@ -11,12 +11,15 @@
 </head>
 <body>
     <div class="head">
+
         <img src="" alt="User Image">
+        {%if conversation %}
         {% for convo in conversation.participants.all %}
         {%if convo != user %}
         <h3>{{convo.username}}</h3>
         {% endif %}
         {%endfor%}
+        {%else%}<h3>{{user.username}}</h3>{%endif%}
     </div>
     <div class="body" id="chatBody">
         <div class="message">
@@ -31,7 +34,7 @@
         <input type="text" name="message" id="messageInput" placeholder="Type a message...">
         <input type="submit" value="Send">
     </form>
-    <input type="hidden" id="conversation" value="{{conversation.id}}">
+    <input type="hidden" id="conversation" value={%if conversation %}"{{conversation.id}}"{%else%}"{{user.id}}"{%endif%}>
     <input type="hidden" id="username" value="{{user.username}}">
     <input type="hidden" id="csrf-token" value="{%csrf_token%}">
     <div id="response"></div>
@@ -80,7 +83,7 @@ const csrfToken = getCookie('csrftoken');
                 return response.json()
             })
             .then(data => {
-                console.log(data.status)
+                alert(data.status)
             })
 
 
@@ -88,6 +91,7 @@ const csrfToken = getCookie('csrftoken');
 
 
         function newMessage(){
+
 
             fetch(`/chat/newMessage/${id}/?last_time=${last_time}`)
                 .then(response => response.json())
@@ -138,6 +142,7 @@ const csrfToken = getCookie('csrftoken');
         document.querySelector(".input").addEventListener('submit', (event) => {
 
             event.preventDefault();
+            console.log('message')
             let message = document.getElementById('messageInput');
 
             fetch(`/chat/sendmessage/${id}/`, {

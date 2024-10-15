@@ -42,7 +42,8 @@
 
         search.addEventListener("keyup", () => {
             setTimeout(() => {
-                fetch(`/chat/search/?value=${search.value}/`)
+                document.getElementById("ul").innerHTML = "";
+                fetch(`/chat/search/?value=${search.value}`)
                 .then(response => {
                     if(!response.ok){
                         alert("no response")
@@ -50,9 +51,9 @@
                     return response.json()})
                 .then(data => {
                     if(data.users.length > 0){
-                        alert("yeeaa")
+                        //alert("yeeaa")
                         data.users.forEach((user) => {
-                            document.getElementById("ul").innerHTML += `<li><a href="">${user.username}</a></li>`;
+                            document.getElementById("ul").innerHTML += `<li><a href="/chat/${user.id}">${user.username}</a></li>`;
                         })
                     }
                 })
