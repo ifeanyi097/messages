@@ -73,7 +73,8 @@ async def get_messages(request, pk):
             message = await sync_to_async(list)(Message.objects.filter(Q(conversation__pk=pk) & Q(id__gt=last_time)).order_by('date'))
             if message:
                 for msg in message:
-                    yield f"data:{json.dumps({'sender':msg.sender.username, 'message':msg.message})}\n\n"
+                    username = await sync_to_async(lambda: msg.sender.username)()
+                    yield f"data:{json.dumps({'sender':username, 'message':msg.message})}\n\n"
                     last_time = msg.id
 
             await asyncio.sleep(1)
